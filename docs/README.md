@@ -1,6 +1,6 @@
 # Even Realities G2 – development reference
 
-> SDK documentation for building apps on the Even G2 smart glasses. Independent research and reverse-engineering of the public SDK – not official documentation. May contain inaccuracies. The author is not affiliated with Even Realities.
+> **Disclaimer:** This document is the result of independent research and reverse-engineering of the public SDK. It is not official documentation, may contain inaccuracies, and is updated as new information becomes available. The author is not affiliated with Even Realities.
 
 The G2 are smart glasses with dual micro-LED displays (one per lens), no camera, no speaker. Privacy-focused design. Paired with the R1 control ring for input. Connected to iPhone via BLE 5.x.
 
