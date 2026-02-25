@@ -1,0 +1,1 @@
+This is the SDK reference for building apps on the Even Realities G2 smart glasses. Read docs/README.md for the index, then read only the specific file needed for the current task. Do not load all files at once.
