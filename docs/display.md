@@ -37,7 +37,7 @@ Available on list and text containers (not images):
 |---|---|---|---|
 | `borderWidth` | number | 0–5 | 0 = no border |
 | `borderColor` | number | 0–15 (list), 0–16 (text) | Greyscale level. Practical values: 5 is a subtle grey, 13 is brighter |
-| `borderRdaius` | number | 0–10 | Rounded corners. Note: SDK uses `borderRdaius` (typo in protobuf, preserved in SDK) |
+| `borderRadius` | number | 0–10 | Rounded corners |
 | `paddingLength` | number | 0–32 | Uniform padding on all sides |
 
 No background colour property. No fill colour. The only visual decoration is the border.
@@ -285,7 +285,7 @@ new ListContainerProperty({
   height: 288,
   borderWidth: 1,
   borderColor: 13,
-  borderRdaius: 6,
+  borderRadius: 6,
   paddingLength: 5,
   containerID: 1,
   containerName: 'my-list',
