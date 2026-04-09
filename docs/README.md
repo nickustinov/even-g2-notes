@@ -10,7 +10,7 @@ The G2 are smart glasses with dual micro-LED displays (one per lens), no camera,
 - [Display and UI](display.md): Canvas (576x288), container model, text/list/image containers, font and Unicode support
 - [Input events](input-events.md): Touch, ring, head gestures, event delivery and quirks
 - [Page lifecycle](page-lifecycle.md): createStartUpPageContainer, rebuild, textContainerUpgrade, updateImageRawData, shutdown, callEvenApp
-- [Device APIs](device-apis.md): Audio, device info, user info, local storage, SDK limitations
+- [Device APIs](device-apis.md): Audio, device info, user info, SDK storage, SDK limitations
 - [Error codes](error-codes.md): Result codes for all operations, SDK JSON compatibility
 - [UI patterns](ui-patterns.md): Fake buttons, selection highlights, progress bars, image-based apps, page flipping
 - [Browser UI](browser-ui.md): even-toolkit design system and component library for WebView settings pages

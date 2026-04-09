@@ -39,14 +39,47 @@ const user = await bridge.getUserInfo()
 // user.country – string
 ```
 
-## Local storage
+## SDK storage
 
-Key-value storage persisted on the phone side:
+Key-value storage persisted on the phone side via the Even Hub bridge:
 
 ```typescript
 await bridge.setLocalStorage('key', 'value') // returns boolean
 const value = await bridge.getLocalStorage('key') // returns string
 ```
+
+**This is the only persistent storage available.** Browser `localStorage` does **not** survive app restarts inside the `.ehpk` WebView – it is wiped when the Even Hub app or the glasses restart. Use `bridge.setLocalStorage` / `bridge.getLocalStorage` for anything that must persist across sessions (favourites, preferences, reading positions, etc.).
+
+There is no `removeLocalStorage` method. To delete a key, write an empty string and treat empty strings as "not present" when reading.
+
+### Recommended pattern: in-memory cache wrapper
+
+The bridge storage calls are async, which makes them awkward for synchronous UI reads. The recommended pattern is to pre-load all keys into an in-memory `Map` at startup, then read from the cache synchronously and write through to the bridge in the background:
+
+```typescript
+const cache = new Map<string, string>()
+
+// At startup, after bridge connects – before any UI renders
+async function initStorage(bridge: EvenAppBridge, keys: string[]): Promise<void> {
+  await Promise.all(keys.map(async (key) => {
+    const value = await bridge.getLocalStorage(key)
+    if (value) cache.set(key, value)
+  }))
+}
+
+// Synchronous read from cache
+function getItem(key: string): string | null {
+  return cache.get(key) ?? null
+}
+
+// Write-through: update cache immediately, persist in background
+function setItem(bridge: EvenAppBridge, key: string, value: string): void {
+  cache.set(key, value)
+  void bridge.setLocalStorage(key, value).catch(() => {})
+}
+```
+
+This gives consumers a synchronous API while keeping the bridge as the source of truth across sessions.
 
 ## What the SDK does NOT expose
 

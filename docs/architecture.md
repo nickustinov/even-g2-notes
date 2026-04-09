@@ -27,7 +27,20 @@ The SDK injects a JS bridge (`EvenAppBridge`) into the WebView's `window` object
 
 - Your backend can hold API keys, do heavy computation, call third-party APIs – the glasses UI is just a thin frontend
 - Standard web security applies: session tokens, server-side secrets, HTTPS
-- The WebView has normal browser capabilities (fetch, localStorage, etc.) in addition to the G2 bridge
+- The WebView has normal browser capabilities (fetch, etc.) in addition to the G2 bridge. **Do not use browser `localStorage`** for persistence – it does not survive app or glasses restarts inside the `.ehpk` WebView. Use [SDK storage](device-apis.md#sdk-storage) (`bridge.setLocalStorage` / `bridge.getLocalStorage`) instead
+
+## Auto-connect on launch
+
+Apps should automatically call `bridge.connect()` (or equivalent) on page load without waiting for user interaction. The user's phone is not always accessible when wearing the glasses, so requiring a manual "Connect" button tap is poor UX.
+
+```typescript
+// Auto-connect on every page load so users don't need to click anything.
+void actions.connect().catch((error) => {
+  console.error('auto-connect failed', error)
+})
+```
+
+Keep a manual connect button as a fallback, but fire the connection automatically at boot.
 
 ## Development flow
 
