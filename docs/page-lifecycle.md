@@ -82,6 +82,38 @@ await bridge.shutDownPageContainer(0) // 0 = immediate exit
 await bridge.shutDownPageContainer(1) // 1 = show exit confirmation to user
 ```
 
+### Submission requirement: root-page double-tap must invoke the exit dialogue
+
+The Even Hub review team **rejects** any app whose root (home) page does not call `shutDownPageContainer(1)` on a double-tap (`DOUBLE_CLICK_EVENT`). Reviewer message:
+
+> Please ensure double tapping at the root page on OS can invoke exit dialogue (shutDownContainer(1)).
+
+Non-root screens should treat double-tap as "go back" (the usual convention). On the root page specifically, double-tap must instead ask the host to show its exit confirmation. Use `exitMode: 1` so the user gets the host's native confirmation dialog – do not use `0` from the root page (that bypasses the dialogue and fails the same check).
+
+**Minimal example** – dispatcher branches on the current screen:
+
+```typescript
+import { OsEventTypeList, type EvenHubEvent } from '@evenrealities/even_hub_sdk'
+
+function onEvent(event: EvenHubEvent) {
+  const type = resolveEventType(event) // see input-events.md
+
+  if (type === OsEventTypeList.DOUBLE_CLICK_EVENT) {
+    if (state.screen === 'main-menu') {
+      // Root page: hand control back to the host for the exit dialogue.
+      void bridge.shutDownPageContainer(1)
+      return
+    }
+    // Any other screen: pop one level.
+    void goBack()
+    return
+  }
+  // ...other event types
+}
+```
+
+If you build on top of `even-toolkit`'s `useGlasses()` hook this is handled for you: it routes `GO_BACK` on a home-mode screen through `showShutdownContainer(1)` by default (`shutdownOnHomeBack: true`). You only need to implement the call yourself if you dispatch events manually.
+
 ## `callEvenApp` (generic escape hatch)
 
 Low-level method for calling any native Even App function by name. All the typed methods (`getDeviceInfo`, `createStartUpPageContainer`, etc.) are wrappers around this.

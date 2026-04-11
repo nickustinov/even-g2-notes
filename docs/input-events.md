@@ -50,3 +50,5 @@ type EvenHubEvent = {
 4. **Simulator vs real device:** The simulator sends `sysEvent` for button clicks, while real hardware sends `textEvent` or `listEvent` depending on the active container. Handle all three event sources.
 
 5. **Swipe throttling:** Scroll events can fire rapidly. Use a cooldown (e.g. 300ms) to prevent duplicate actions.
+
+6. **Root-page double-tap must exit:** Even Hub submission rejects apps whose home/root page does not call `shutDownPageContainer(1)` on `DOUBLE_CLICK_EVENT`. Non-root screens should still treat double-tap as "go back". See [page lifecycle – submission requirement](page-lifecycle.md#submission-requirement-root-page-double-tap-must-invoke-the-exit-dialogue).

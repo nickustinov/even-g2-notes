@@ -55,7 +55,7 @@ All glasses entry points:
 | `even-toolkit` | Re-exports everything from types, action-bar, text-utils, timer-display, gestures, text-clean, paginate-text |
 | `even-toolkit/types` | `LineStyle`, `DisplayLine`, `DisplayData`, `line()`, `separator()`, `ColumnData`, `ImageTileData`, `PageMode`, `GlassActionType`, `GlassAction`, `GlassNavState` |
 | `even-toolkit/bridge` | `EvenHubBridge` class, `ColumnConfig` type |
-| `even-toolkit/useGlasses` | `useGlasses<S>()` hook, `UseGlassesConfig<S>` type |
+| `even-toolkit/useGlasses` | `useGlasses<S>()` hook, `UseGlassesConfig<S>` type. Handles the [root-page exit requirement](page-lifecycle.md#submission-requirement-root-page-double-tap-must-invoke-the-exit-dialogue) automatically via `shutdownOnHomeBack` (default `true`, mode `1`) |
 | `even-toolkit/useFlashPhase` | `useFlashPhase(active)` hook |
 | `even-toolkit/action-bar` | `buildActionBar()`, `buildStaticActionBar()` |
 | `even-toolkit/action-map` | `mapGlassEvent(event)` – maps `EvenHubEvent` to `GlassAction \| null` |
