@@ -27,3 +27,4 @@ The G2 are smart glasses with dual micro-LED displays (one per lens), no camera,
 | [tesla](https://github.com/nickustinov/tesla-even-g2) | Tesla vehicle status and controls | Image-based rendering, backend server |
 | [pong](https://github.com/nickustinov/pong-even-g2) | Pong game | Canvas-rendered game, image container |
 | [snake](https://github.com/nickustinov/snake-even-g2) | Snake game | Canvas-rendered game, image container |
+| [flappy-g2](https://github.com/200even/flappy-g2) | Flappy Bird clone | Tap-to-flap game, image container, 4-bit greyscale |
