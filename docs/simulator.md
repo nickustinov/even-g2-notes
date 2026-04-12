@@ -112,6 +112,8 @@ export default defineConfig({
 - **If your app needs a backend server**, put it in a `server/` directory with its own `package.json`. Even-dev auto-detects and starts it alongside Vite.
 - **Use [even-toolkit](https://github.com/fabioglimb/even-toolkit)** for the browser settings page. See [browser UI](browser-ui.md).
 
+**Simulator limitations:** as of `@evenrealities/evenhub-simulator` 0.7.1, the simulator rejects pages with more than 4 containers and does not support image containers larger than 200x100. These features work on real glasses hardware (SDK 0.0.10+).
+
 **Reference apps:**
 
 | App | Description | Source |
