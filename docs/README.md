@@ -21,6 +21,7 @@ The G2 are smart glasses with dual micro-LED displays (one per lens), no camera,
 
 | App | Description | Source |
 |-----|-------------|--------|
+| [demo](https://github.com/nickustinov/demo-app-g2) | SDK feature showcase: all container types, max containers (4 img + 8 other), Unicode glyphs, events inspector | **Start here** |
 | [chess](https://github.com/dmyster145/EvenChess) | Full app with tests, linting, modular architecture | Complex reference |
 | [reddit](https://github.com/fuutott/rdt-even-g2-rddit-client) | Clean app with `app.json` packaging, API proxy, evenhub-cli integration | Packaging reference |
 | [weather](https://github.com/nickustinov/weather-even-g2) | Settings UI with even-toolkit, vite-plugin.ts for even-dev | Simple reference |
