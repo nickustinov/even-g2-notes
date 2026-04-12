@@ -101,6 +101,44 @@ The glasses firmware uses a single LVGL font baked into the firmware. There is n
 
 Tested on the Even Hub Simulator (`@evenrealities/evenhub-simulator` v0.0.7, Feb 2025). Real hardware may differ.
 
+### Monospace workaround with fullwidth characters
+
+Since the font is proportional, grid-based games and aligned text layouts break with regular ASCII characters. The workaround is to use **CJK fullwidth characters**, which are all guaranteed to be the same width as each other by the Unicode standard (East Asian Width property `F` or `W`).
+
+**Key characters:**
+
+- **Ideographic space** `\u3000` – a fullwidth space, same width as other fullwidth characters. Use instead of regular space for grid alignment.
+- **Fullwidth Latin letters** (`Ａ`–`Ｚ`, `ａ`–`ｚ`) – U+FF21–U+FF5A
+- **Fullwidth digits** (`０`–`９`) – U+FF10–U+FF19
+- **CJK ideographs** (日火水木金土 etc.) and **Bopomofo symbols** (ㄌㄛㄜ etc.)
+
+**Converting ASCII to fullwidth:** add `0xFEE0` to any ASCII character code:
+
+```typescript
+// 'A' (U+0041) → 'Ａ' (U+FF21)
+function toFullwidth(str: string): string {
+  return str.replace(/[\x20-\x7E]/g, (ch) =>
+    ch === ' ' ? '\u3000' : String.fromCharCode(ch.charCodeAt(0) + 0xFEE0)
+  )
+}
+```
+
+**Example character set** (from [eventrix](https://github.com/dmi3-dev/eventrix)):
+
+```typescript
+const MONO_SPACE = '\u3000'
+const MONO_CHARS =
+  'ㄌㄛㄜㄝㄞㄟㄠㄡㄢㄣㄤㄥㄦ个丫丬中丮丰丱串丳临〆丸' +
+  '丹为々主丼丽乂乃久乇么义日火水木金土年月時分秒人大' +
+  '小上下左右前後東西南北０１２３４５６７８９ＡＢＣＤ' +
+  'ＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃ' +
+  'ｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ＄＆'
+```
+
+**Practical usage for games:** for empty grid cells, use `\u3000` (ideographic space) instead of regular space or `□` (U+25A1). This ensures all cells are the same width regardless of whether they contain a game element or are empty. Note that non-fullwidth characters like `▦` (U+25A6) or `●` (U+25CF) may not be exactly the same width as fullwidth characters – but in practice the alignment is close enough for game grids on the G2 display.
+
+**Scrollbar fix:** text containers show a scrollbar when content overflows. A common cause is a trailing `\n` after the last row of a grid – it creates an empty line that pushes content past the container height. Remove the trailing newline from the last row to fix this.
+
 ### Available glyphs
 
 **ASCII and Latin (U+0020–U+00FF)** – nearly complete (all printable characters except five):
