@@ -65,7 +65,7 @@ const config = {
 }
 ```
 
-Note: image containers are limited to 200×100 px max, so they cannot cover the full 576×288 canvas. Centre the image container on screen (xPosition = (576−200)/2 = 188, yPosition = (288−100)/2 = 94) and use the text container's text or a black background to fill the rest.
+Note: a single image container can be up to 288×144 px. To cover the full 576×288 canvas, tile multiple image containers (e.g. a 2×2 grid of 288×144). Use a text container with `isEventCapture: 1` behind them for input.
 
 This gives you click, double-click, scroll-top and scroll-bottom events while the image is visible. Events arrive as `textEvent` (not `listEvent`), so adjust your event handler accordingly.
 

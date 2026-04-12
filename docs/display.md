@@ -9,7 +9,7 @@
 The UI is built from **containers** – rectangular regions positioned absolutely on the canvas. There is no CSS, no flexbox, no DOM. You define containers with pixel coordinates, and the glasses firmware renders them.
 
 **Rules:**
-- Max **4 containers per page** (mixed types allowed)
+- Maximum **4 image containers** and **8 other containers** per page (12 total, mixed types allowed)
 - Exactly **one** container must have `isEventCapture: 1` – this is the container that receives input events
 - Container count is set via `containerTotalNum` and must match the actual number of containers passed
 - Containers can overlap (later containers draw on top)
@@ -23,8 +23,8 @@ All container types share these layout properties:
 |---|---|---|---|
 | `xPosition` | number | 0–576 | Left edge in pixels |
 | `yPosition` | number | 0–288 | Top edge in pixels |
-| `width` | number | 0–576 | 20–200 for images |
-| `height` | number | 0–288 | 20–100 for images |
+| `width` | number | 0–576 | 20–288 for images |
+| `height` | number | 0–288 | 20–144 for images |
 | `containerID` | number | any | Unique per page, used for updates |
 | `containerName` | string | max 16 chars | Unique per page, used for updates |
 | `isEventCapture` | number | 0 or 1 | Exactly one container must be 1 |
@@ -337,8 +337,8 @@ new ImageContainerProperty({
 
 | Constraint | Value |
 |---|---|
-| Width | 20–200 px |
-| Height | 20–100 px |
+| Width | 20–288 px |
+| Height | 20–144 px |
 | Colour | Converted to 4-bit greyscale (`imageToGray4`) by the host |
 | Data formats | `number[]`, `Uint8Array`, `ArrayBuffer`, or base64 string |
 | Concurrent sends | **Not allowed** – queue image updates sequentially |
