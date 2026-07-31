@@ -100,7 +100,7 @@ Every Even Hub app needs an `app.json` at the project root. This describes the a
   "edition": "202601",
   "name": "My app",
   "version": "1.0.0",
-  "min_app_version": "2.2.6",
+  "min_app_version": "2.2.7",
   "min_sdk_version": "0.0.13",
   "tagline": "Short description shown in Even Hub",
   "description": "Longer description of what the app does",
@@ -146,10 +146,11 @@ pre-release suffix). `supported_languages` accepts only `en`, `de`, `fr`, `es`,
 `it`, `zh`, `ja`, `ko`.
 
 **`min_app_version` / `min_sdk_version`:** Set these honestly — they gate who is
-offered the app. SDK 0.0.13 declares a minimum Even App of **2.2.6**, because
-image sends are broken below it (see [page-lifecycle.md](page-lifecycle.md)). If
-you ship image containers on 0.0.12+, `min_app_version` below 2.2.6 will show
-those users a broken app.
+offered the app. SDK 0.0.13 declares a minimum Even App of `2.2.6` in its own
+`package.json`, but that value is too low: image sends were still broken there
+and the fix landed in **2.2.7** (see [page-lifecycle.md](page-lifecycle.md)). If
+you ship image containers on SDK 0.0.12+, set `min_app_version` to `2.2.7` —
+anything lower shows those users a broken app.
 
 **CORS still applies.** The whitelist is an Even-level permission check, not a
 CORS bypass. The WebView is a real browser engine and enforces CORS, so an API

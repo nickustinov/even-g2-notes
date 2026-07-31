@@ -1,6 +1,6 @@
 # Performance
 
-Measured on a G2 (firmware 2.2.6.10, Even App 2.2.6, SDK 0.0.13) over ~40 sends
+Measured on a G2 (firmware 2.2.7.14, Even App 2.2.7, SDK 0.0.13) over ~40 sends
 in one session, from a real app. Treat the absolute numbers as one data point,
 not a platform specification — but the *shape* (a large fixed cost per host
 call, payload barely mattering) has held across every call type tested.

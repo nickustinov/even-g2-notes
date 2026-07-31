@@ -83,13 +83,13 @@ size barely matters; call count is what costs. See [performance.md](performance.
 
 ### `compressMode` and the 0.0.12 image regression
 
-**SDK 0.0.12 breaks image sends on Even App below 2.2.6.** It stamps
+**SDK 0.0.12 breaks image sends on Even App below 2.2.7.** It stamps
 `compressMode: 2` (LZ4) onto every `updateImageRawData` payload while passing
 `imageData` through **uncompressed** — verified byte-identical from 512 B to
 200 KB, with no size threshold. On an older host this produces `imageException`
 or `sendFailed`, or images that render as garbage.
 
-Symptoms seen on firmware 2.2.6.10 with an older Even App:
+Symptoms seen on firmware 2.2.6.10 with Even App 2.2.6:
 
 - small container (1,682 B gray4): `success`, but rendered garbled
 - large container (17,680 B gray4): `sendFailed`
@@ -101,7 +101,7 @@ instance or a plain object, because the SDK overwrites it during serialisation.
 The only interception point is the static `ImageRawDataUpdate.toJson`:
 
 ```typescript
-// Workaround for hosts below Even App 2.2.6. Prefer updating the app.
+// Workaround for hosts below Even App 2.2.7. Prefer updating the app.
 const original = ImageRawDataUpdate.toJson.bind(ImageRawDataUpdate)
 ImageRawDataUpdate.toJson = (model) => {
   const json = original(model)
@@ -113,8 +113,13 @@ ImageRawDataUpdate.toJson = (model) => {
 **0.0.13 does not change this code path.** Its type definitions are identical to
 0.0.12 and it still sends `compressMode: 2` over uncompressed bytes; the only
 change is a `minAppVersion: "2.2.6"` field in the SDK's own `package.json`. The
-resolution is a host requirement, not an SDK fix — **update the Even App to
-2.2.6+** and set `min_app_version` accordingly.
+resolution is a host requirement, not an SDK fix — **update the Even App** and
+set `min_app_version` accordingly.
+
+**Do not trust that `minAppVersion: "2.2.6"`.** The SDK declares 2.2.6, but in
+practice images were still broken there; the fix landed in **Even App 2.2.7**
+(confirmed working on firmware 2.2.7.14). Set `min_app_version` to `2.2.7` in
+your `app.json`, not to the value the SDK advertises.
 
 ### The exit dialogue inverts the foreground events, and can wedge the image channel
 
@@ -138,9 +143,11 @@ The firmware also emits **duplicate sys events** for one physical transition,
 ~50-100 ms apart. Dedupe by (type, timestamp) over ~600 ms before acting, or a
 single transition rebuilds the page twice.
 
-**The image-channel defect.** Observed on firmware 2.2.6.10 / Even App 2.2.6 /
-SDK 0.0.13: after the dialogue is shown and dismissed, `rebuildPageContainer`
-still returns `ok`, text still renders and input events still arrive — but every
+**The image-channel defect.** Observed on firmware 2.2.7.14 / Even App 2.2.7 /
+SDK 0.0.13 — i.e. it persists on the versions that fixed the `compressMode`
+bug, and is a separate problem. After the dialogue is shown and dismissed,
+`rebuildPageContainer` still returns `ok`, text still renders and input events
+still arrive — but every
 `updateImageRawData` returns `sendFailed` **in 1-3 ms**, an immediate rejection
 with no transfer attempted, against ~110-215 ms for a normal send. It does not
 recover until the app restarts.
