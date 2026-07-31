@@ -81,7 +81,7 @@ my-app/
     "build": "vite build"
   },
   "dependencies": {
-    "@evenrealities/even_hub_sdk": "^0.0.7"
+    "@evenrealities/even_hub_sdk": "^0.0.13"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

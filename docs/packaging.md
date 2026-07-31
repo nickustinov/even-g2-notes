@@ -100,21 +100,61 @@ Every Even Hub app needs an `app.json` at the project root. This describes the a
   "edition": "202601",
   "name": "My app",
   "version": "1.0.0",
-  "min_app_version": "0.1.0",
+  "min_app_version": "2.2.6",
+  "min_sdk_version": "0.0.13",
   "tagline": "Short description shown in Even Hub",
   "description": "Longer description of what the app does",
   "author": "Your Name",
   "entrypoint": "index.html",
-  "permissions": {
-    "network": ["api.example.com"],
-    "fs": ["./assets"]
-  }
+  "supported_languages": ["en"],
+  "permissions": [
+    {
+      "name": "network",
+      "desc": "Fetches data from the API.",
+      "whitelist": ["https://api.example.com"]
+    },
+    {
+      "name": "location",
+      "desc": "Shows content for your current location."
+    }
+  ]
 }
 ```
 
 **`package_id` rules:** Must be a valid reverse-domain name where each segment starts with a lowercase letter and contains only lowercase letters or numbers. No hyphens. Example: `com.myname.myapp` (valid), `com.my-name.my-app` (invalid).
 
-**`permissions.network`:** List domains your app needs to access. Use `["*"]` for unrestricted network access (e.g. apps that connect to user-configured servers).
+**`permissions` must be an array of objects**, each with `name` and `desc`. An
+older key-value map form (`"permissions": { "network": [...] }`) is rejected by
+the current CLI with *"each permission must be an object with name and desc
+keys"*.
+
+| `name` | Notes |
+|---|---|
+| `network` | Requires `whitelist`: an array of full origins, e.g. `https://api.example.com` |
+| `location` | Phone GPS via `getAppLocation` |
+| `album` | Phone photo album via `pickImageFromAlbum` |
+| `camera` | Phone camera via `captureImageFromCamera` |
+| `g2-microphone` | Microphone on the glasses |
+| `phone-microphone` | Microphone on the phone |
+
+`desc` is 1-300 characters and is shown to the user, so write it as a reason
+rather than a restatement of the permission name.
+
+**Other required fields:** `edition` must be exactly `"202601"`. `name` is max
+20 characters. `version` is three-part semver (`"1.0.0"` — no `v` prefix, no
+pre-release suffix). `supported_languages` accepts only `en`, `de`, `fr`, `es`,
+`it`, `zh`, `ja`, `ko`.
+
+**`min_app_version` / `min_sdk_version`:** Set these honestly — they gate who is
+offered the app. SDK 0.0.13 declares a minimum Even App of **2.2.6**, because
+image sends are broken below it (see [page-lifecycle.md](page-lifecycle.md)). If
+you ship image containers on 0.0.12+, `min_app_version` below 2.2.6 will show
+those users a broken app.
+
+**CORS still applies.** The whitelist is an Even-level permission check, not a
+CORS bypass. The WebView is a real browser engine and enforces CORS, so an API
+without `Access-Control-Allow-Origin` fails even when whitelisted. Use a proxy
+you control, or an API that sends the headers.
 
 ## Recommended npm scripts
 

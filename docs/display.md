@@ -13,7 +13,7 @@ The UI is built from **containers** – rectangular regions positioned absolutel
 - Exactly **one** container must have `isEventCapture: 1` – this is the container that receives input events
 - Container count is set via `containerTotalNum` and must match the actual number of containers passed
 - Containers can overlap (later containers draw on top)
-- No z-index control beyond declaration order
+- `zOrderIndex` (SDK 0.0.12+) controls stacking explicitly – see below
 
 ## Shared container properties
 
@@ -28,6 +28,20 @@ All container types share these layout properties:
 | `containerID` | number | any | Unique per page, used for updates |
 | `containerName` | string | max 16 chars | Unique per page, used for updates |
 | `isEventCapture` | number | 0 or 1 | Exactly one container must be 1 |
+| `zOrderIndex` | number | any | SDK 0.0.12+, all-or-none per page (see below) |
+
+### `zOrderIndex` (SDK 0.0.12+)
+
+Available on list, text and image containers. Higher values draw on top; the
+0.0.12 README example gives the image container the highest index.
+
+**It is all-or-none per page.** The SDK ships
+`validateEvenHubPageContainerZOrder()`, which rejects a partial set with
+`MISSING_Z_ORDER_INDEX` and duplicates with `DUPLICATE_Z_ORDER_INDEX`. Omitting
+it on every container of a page stays valid, so existing pages need no change.
+
+Setting it on one page and omitting it on another is fine – validation is
+per-page.
 
 ## Border and decoration
 
@@ -306,6 +320,9 @@ Games and diagrams:
 **Misc Symbols** – missing: ☀ ☁ ☂ ☃ (weather), ☠ ☢ ☣ (hazard), ☮ ☯ (peace/yin-yang), ☺ ☻ (faces), and most other symbols in U+2600–U+263F.
 
 **Entirely absent ranges:**
+- Miscellaneous Technical (U+2300–U+23FF) – includes ⌂ ⌖ ⌚ ⏱, so the obvious
+  "position indicator" ⌖ (U+2316) for a location marker renders as nothing. Use
+  ◎ (U+25CE) or ● (U+25CF) from Geometric Shapes instead.
 - Dingbats (U+2700–U+273F)
 - Emoji (U+1F300+)
 - Misc weather symbols (U+26C4–U+26C8 – ⛄ ⛅ etc.)
@@ -382,6 +399,14 @@ new ImageContainerProperty({
 | Concurrent sends | **Not allowed** – queue image updates sequentially |
 | Startup phase | Cannot send image data during `createStartUpPageContainer` – create an empty placeholder, then update via `updateImageRawData` |
 | Tiling | If image data is smaller than the container dimensions, the hardware tiles (repeats) it – always match image size to container size |
+
+**Prefer one large image container to several small ones.** Each
+`updateImageRawData` costs ~104 ms of fixed overhead regardless of payload, so
+two containers cost ~208 ms before any pixels move. Where two images fall inside
+a single 288x144 box, compositing them onto one canvas and sending once is a
+direct saving — the extra bytes cost single-digit milliseconds. The 288x144 cap
+is what makes this impossible for tall strips. See
+[performance.md](performance.md).
 
 **`ImageRawDataUpdate` fields:**
 - `containerID` – must match the image container
